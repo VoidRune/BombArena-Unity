@@ -65,7 +65,8 @@ public class ArenaBuilder : MonoBehaviour
                     go.GetComponent<MeshFilter>().mesh = m.Mesh;
                     go.GetComponent<MeshRenderer>().material = m.Material;
 
-                    if(c != ' ')
+                    //if(c != ' ')
+                    if (c == '#')
                         go.AddComponent<BoxCollider>();
                 }
             }
