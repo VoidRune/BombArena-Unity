@@ -5,6 +5,7 @@ using UnityEngine;
 public class Explosion : MonoBehaviour
 {
     public float m_ExplosionDuration = 2.0f;
+    public int m_FrameCountdown = 4;
     private float m_StartTime;
     // Start is called before the first frame update
     void Start()
@@ -19,5 +20,11 @@ public class Explosion : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        if(m_FrameCountdown <= 0)
+        {
+            Destroy(gameObject.GetComponent<SphereCollider>());
+        }
+        m_FrameCountdown--;
     }
 }

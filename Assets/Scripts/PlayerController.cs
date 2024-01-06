@@ -85,5 +85,10 @@ public class PlayerController : MonoBehaviour
             m_MovementSpeed += 5.0f;
             Debug.Log("PowerUp Hit");
         }
+
+        if (other.tag == "Explosion")
+        {
+            Debug.Log("Player died!");
+        }
     }
 }
