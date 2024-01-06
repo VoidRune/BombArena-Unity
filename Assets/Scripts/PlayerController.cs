@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody m_RigidBody;
     public float m_MovementSpeed;
 
-    public GameObject m_Bomb;
+    public ArenaBuilder m_ArenaBuilderScript;
 
     private GameObject m_LastBombPlaced;
 
@@ -61,14 +61,20 @@ public class PlayerController : MonoBehaviour
         {
             int x = (int)(gameObject.transform.position.x + 0.5f);
             int z = (int)(gameObject.transform.position.z + 0.5f);
-            Debug.Log("Bomb dropped " + x + " " + z);
 
-            // Enable collsion for last bomb
-            if(m_LastBombPlaced)
-                Physics.IgnoreCollision(m_LastBombPlaced.GetComponent<Collider>(), GetComponent<Collider>(), false);
+            GameObject b = m_ArenaBuilderScript.TryPlaceBomb(x, z);
 
-            m_LastBombPlaced = Instantiate(m_Bomb, new Vector3(x, 0, z), Quaternion.identity);
-            Physics.IgnoreCollision(m_LastBombPlaced.GetComponent<Collider>(), GetComponent<Collider>(), true);
+            if(b != null)
+            {
+                Debug.Log("Bomb dropped " + x + " " + z);
+                // Enable collsion for last bomb
+                if(m_LastBombPlaced)
+                    Physics.IgnoreCollision(m_LastBombPlaced.GetComponent<Collider>(), GetComponent<Collider>(), false);
+
+                m_LastBombPlaced = b;
+                Physics.IgnoreCollision(m_LastBombPlaced.GetComponent<Collider>(), GetComponent<Collider>(), true);
+            }
+
         }
     }
 
