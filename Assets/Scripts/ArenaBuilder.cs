@@ -17,6 +17,9 @@ public class ArenaBuilder : MonoBehaviour
     public GameObject m_ExplosionPrefab;
 
     private char[,] m_Arena;
+
+    private Dictionary<Vector2Int, GameObject> m_DestructibleTiles = new Dictionary<Vector2Int, GameObject>();
+
     /* Just so we can set tiles in the editor */
     [System.Serializable]
     public class KeyValue
@@ -33,6 +36,14 @@ public class ArenaBuilder : MonoBehaviour
         public GameObject obj;
     }
     private Dictionary<Vector2Int, Bomb> m_BombQueue = new Dictionary<Vector2Int, Bomb>();
+    public class Explosion
+    {
+        public float timeOfExplosion;
+        public Vector2Int position;
+        public Vector2Int direction;
+        public int popagation;
+    }
+    private List<Explosion> m_ExplosionQueue = new List<Explosion>();
 
     private Transform m_TileChildTransform;
     private Transform m_BombChildTransform;
@@ -81,12 +92,13 @@ public class ArenaBuilder : MonoBehaviour
                     go.AddComponent<MeshRenderer>();
                     go.GetComponent<MeshFilter>().mesh = m.Mesh;
                     go.GetComponent<MeshRenderer>().material = m.Material;
-                    //if(c != ' ')
-                    if (c == '#')
+                    if (c != ' ')
                         go.AddComponent<BoxCollider>();
 
                     go.transform.parent = m_TileChildTransform;
                     go.name = c.ToString();
+
+                    m_DestructibleTiles[new Vector2Int(x, y)] = go;
                 }
             }
         }
@@ -105,7 +117,43 @@ public class ArenaBuilder : MonoBehaviour
                 valuesToDelete.Add(entry.Key);
                 m_Arena[pos.y, pos.x] = ' ';
 
-                Instantiate(m_ExplosionPrefab, new Vector3(pos.x, 0, pos.y), Quaternion.identity, m_ExplosionChildTransform);
+                Explosion ex0 = new Explosion();
+                ex0.timeOfExplosion = Time.time;
+                ex0.position = pos;
+                ex0.direction = new Vector2Int(0, 0);
+                ex0.popagation = 0;
+
+                Explosion ex1 = new Explosion();
+                ex1.timeOfExplosion = Time.time;
+                ex1.position = new Vector2Int(pos.x-1, pos.y);
+                ex1.direction = new Vector2Int(-1, 0);
+                ex1.popagation = 4;
+
+                Explosion ex2 = new Explosion();
+                ex2.timeOfExplosion = Time.time;
+                ex2.position = new Vector2Int(pos.x+1, pos.y);
+                ex2.direction = new Vector2Int(1, 0);
+                ex2.popagation = 4;
+
+                Explosion ex3 = new Explosion();
+                ex3.timeOfExplosion = Time.time;
+                ex3.position = new Vector2Int(pos.x, pos.y-1);
+                ex3.direction = new Vector2Int(0,-1);
+                ex3.popagation = 4;
+
+                Explosion ex4 = new Explosion();
+                ex4.timeOfExplosion = Time.time;
+                ex4.position = new Vector2Int(pos.x, pos.y+1);
+                ex4.direction = new Vector2Int(0, 1);
+                ex4.popagation = 4;
+
+                m_ExplosionQueue.Add(ex0);
+                m_ExplosionQueue.Add(ex1);
+                m_ExplosionQueue.Add(ex2);
+                m_ExplosionQueue.Add(ex3);
+                m_ExplosionQueue.Add(ex4);
+
+                //Instantiate(m_ExplosionPrefab, new Vector3(pos.x, 0, pos.y), Quaternion.identity, m_ExplosionChildTransform);
                 //m_BombQueue.Remove(entry.Key);
             }
 
@@ -115,6 +163,58 @@ public class ArenaBuilder : MonoBehaviour
         {
             m_BombQueue.Remove(key);
         }
+
+        List<Explosion> newExplosionQueue = new List<Explosion>();
+        foreach (Explosion ex in m_ExplosionQueue)
+        {
+            if(ex.timeOfExplosion <= Time.time)
+            {
+                Vector2Int pos = ex.position;
+                char tile = m_Arena[pos.y, pos.x];
+                if (tile == '#')
+                {
+                    continue;
+                }
+
+                Instantiate(m_ExplosionPrefab, new Vector3(ex.position.x, 0, ex.position.y), Quaternion.identity, m_ExplosionChildTransform);
+                
+                if(tile == 'X')
+                {
+                    Destroy(m_DestructibleTiles[pos]);
+                    m_Arena[pos.y, pos.x] = ' ';
+
+                    GameObject go = new GameObject();
+                    go.transform.position = new Vector3(pos.x, 0, pos.y);
+                    go.AddComponent<MeshFilter>();
+                    go.AddComponent<MeshRenderer>();
+                    go.GetComponent<MeshFilter>().mesh = m_Tiles[' '].Mesh;
+                    go.GetComponent<MeshRenderer>().material = m_Tiles[' '].Material;
+                    go.transform.parent = m_TileChildTransform;
+                    go.name = " ";
+
+                    m_DestructibleTiles[pos] = go;
+
+                    continue;
+                }
+                // Propagate the explosion
+                if(ex.popagation > 0)
+                {
+                    Explosion ex0 = new Explosion();
+                    ex0.timeOfExplosion = ex.timeOfExplosion + 0.1f;
+                    ex0.position = pos + ex.direction;
+                    ex0.direction = ex.direction;
+                    ex0.popagation = ex.popagation - 1;
+
+                    newExplosionQueue.Add(ex0);
+                }
+
+            }
+            else
+            {
+                newExplosionQueue.Add(ex);
+            }
+        }
+        m_ExplosionQueue = newExplosionQueue;
     }
 
     public GameObject TryPlaceBomb(int x, int z)

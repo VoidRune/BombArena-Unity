@@ -16,7 +16,7 @@ public class PowerUp : MonoBehaviour
     {
         if (other.tag == "Player")
         {
-            Debug.Log("PoerUp destroyed!");
+            Debug.Log("PowerUp destroyed!");
             Destroy(gameObject);
         }
     }
