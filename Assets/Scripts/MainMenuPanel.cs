@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MainMenuPanel : MonoBehaviour
 {
 
     public Material m_PostProcessing;
     public Camera m_Camera;
+    public Slider m_EpsilonSlider;
 
     [Range(0.0f, 10.0f)] public float m_Power = 8.0f;
     [Range(0.00002f, 0.05f)] public float m_Epsilon = 0.0002f;
@@ -52,6 +54,12 @@ public class MainMenuPanel : MonoBehaviour
         y = 1.4f * ((mousePos.y / Screen.height) * 2.0f - 1.0f);
 
         SetParameters();
+
+        m_EpsilonSlider.value = m_Epsilon;
+        m_EpsilonSlider.onValueChanged.AddListener((v) =>
+        {
+            m_Epsilon = v;
+        });
     }
 
     // Update is called once per frame
