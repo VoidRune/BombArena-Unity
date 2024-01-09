@@ -41,6 +41,7 @@ public class PauseMenu : MonoBehaviour
 
     public void ToMainMenu()
     {
+        ContinueGame();
         Debug.Log("Back to main menu");
         SceneManager.LoadScene("MainMenu");
     }
