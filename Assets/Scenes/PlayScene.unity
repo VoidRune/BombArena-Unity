@@ -515,6 +515,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Transform: {fileID: 765893589}
+  m_PostProcessing: {fileID: 2100000, guid: cb19ef6445a646e40a911e57c197e246, type: 2}
+  m_BackgroundScale: 0.8
+  m_Time: 0.02
 --- !u!1 &1136133786
 GameObject:
   m_ObjectHideFlags: 0
