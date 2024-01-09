@@ -9,6 +9,8 @@ public class MainMenu : MonoBehaviour
     public Slider m_VolumeSlider;
     void Start()
     {
+        Time.timeScale = 1.0f;
+
         AudioListener.volume = m_VolumeSlider.value;
         m_VolumeSlider.onValueChanged.AddListener((v) =>
         {
