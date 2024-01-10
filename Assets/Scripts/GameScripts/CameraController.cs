@@ -13,6 +13,20 @@ public class CameraController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        switch (GlobalVariables.ArenaMapIndex)
+        {
+            case 0:
+                m_Transform.transform.position = new Vector3(1, 1, 1);
+                break;
+            case 1:
+                m_Transform.transform.position = new Vector3(4, 1, 1);
+                break;
+            case 2:
+            default:
+                m_Transform.transform.position = new Vector3(2, 1, 2);
+                break;
+        }
+
         m_PostProcessing.SetFloat("_BackgroundScale", m_BackgroundScale);
         m_PostProcessing.SetFloat("_TimeScale", m_Time);
     }
