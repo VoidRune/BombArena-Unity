@@ -49,8 +49,6 @@ Shader "Hidden/MainMenuEffect"
             uniform float _Epsilon;
             uniform float _MaxDist;
             uniform int _MaxIter;
-            uniform float _Darkness;
-            uniform float _BlackWhite;
 
             // Mandelbulb distance estimation:
             // http://blog.hvidtfeldts.net/index.php/2011/09/distance-estimated-3d-fractals-v-the-mandelbulb-different-de-approximations/
@@ -110,8 +108,6 @@ Shader "Hidden/MainMenuEffect"
                 float3 rayDirection = mul(_CameraInverseView, float4(normalize(rayTarget.xyz / rayTarget.w), 0.0)).xyz;
 
 
-                float4 color = float4(0, 0, 0, 1.0);
-
                 float maxDist = _MaxDist;
                 float maxSteps = float(_MaxIter);
 
@@ -127,18 +123,6 @@ Shader "Hidden/MainMenuEffect"
 
                     if (dst <= _Epsilon)
                     {
-                        //float c = saturate(value.x / 16.0f);
-                        //
-                        //float escapeIterations = value.x;
-                        //float3 normal = EstimateNormal(p);
-                        //
-                        //float colorA = saturate(dot(normal * .5 + .5, -_LightDirection));
-                        //float colorB = saturate(escapeIterations / 16.0);
-                        //float3 colorMix = lerp(_ColourAMix, _ColourBMix, colorB);
-                        //
-                        //color = float4(colorMix.xyz, 1);
-
-                        //color.rgb = normal;
                         break;
                     }
 
@@ -148,8 +132,6 @@ Shader "Hidden/MainMenuEffect"
                 float part = steps / maxSteps;
 
                 float4 finalColor = float4(lerp(_ColourAMix, _ColourBMix, part), 1.0f);
-                //float rim = steps / _Darkness;
-                //float4 finalColor = lerp(color, 1, _BlackWhite) * rim;
 
                 return finalColor;
             }
