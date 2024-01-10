@@ -11,7 +11,7 @@ public class ArenaBuilder : MonoBehaviour
         public Material Material;
     }
 
-    public Dictionary<char, ArenaTile> m_Tiles = new Dictionary<char, ArenaTile>();
+    public static Dictionary<char, ArenaTile> m_Tiles = new Dictionary<char, ArenaTile>();
 
     public GameObject m_BombPrefab;
     public GameObject m_ExplosionPrefab;
@@ -62,7 +62,8 @@ public class ArenaBuilder : MonoBehaviour
         {
             m_Tiles[kv.Key] = kv.Value;
         }
-        switch(GlobalVariables.ArenaMapIndex)
+
+        switch (GlobalVariables.ArenaMapIndex)
         {
             case 0:
                 m_Arena = new char[,]
@@ -181,6 +182,7 @@ public class ArenaBuilder : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         List<Vector2Int> valuesToDelete = new List<Vector2Int>();
 
         foreach (KeyValuePair<Vector2Int, Bomb> entry in m_BombQueue)
