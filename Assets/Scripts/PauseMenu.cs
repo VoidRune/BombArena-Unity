@@ -5,6 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
+    public AudioSource m_PauseSound;
+    public AudioSource m_ResumeSound;
+    
     private bool m_IsPause = false;
     void Start()
     {
@@ -16,10 +19,12 @@ public class PauseMenu : MonoBehaviour
         {
             if(!m_IsPause)
             {
+                m_PauseSound.Play();
                 PauseGame();
             }
             else
             {
+                m_ResumeSound.Play();
                 ContinueGame();
             }
         }

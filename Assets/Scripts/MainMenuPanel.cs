@@ -11,7 +11,7 @@ public class MainMenuPanel : MonoBehaviour
     public Slider m_EpsilonSlider;
 
     [Range(0.0f, 10.0f)] public float m_Power = 8.0f;
-    [Range(0.00002f, 0.05f)] public float m_Epsilon = 0.0002f;
+    [Range(0.00002f, 0.05f)] public float m_Epsilon = 0.0006f;
 
     public Color m_ColorA;
     public Color m_ColorB;

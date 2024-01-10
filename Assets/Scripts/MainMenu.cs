@@ -7,14 +7,16 @@ using UnityEngine.UI;
 public class MainMenu : MonoBehaviour
 {
     public Slider m_VolumeSlider;
-    void Start()
+    void Awake()
     {
         Time.timeScale = 1.0f;
+        m_VolumeSlider.value = GlobalVariables.MasterVolume;
 
         AudioListener.volume = m_VolumeSlider.value;
         m_VolumeSlider.onValueChanged.AddListener((v) =>
         {
             Debug.Log("New volume: " + v);
+            GlobalVariables.MasterVolume = v;
             AudioListener.volume = v;
         });
     }
