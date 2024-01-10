@@ -20,8 +20,9 @@ public class MainMenu : MonoBehaviour
             AudioListener.volume = v;
         });
     }
-    public void PlayGame()
+    public void PlayGame(int index)
     {
+        GlobalVariables.ArenaMapIndex = index;
         Debug.Log("Starting game!");
         SceneManager.LoadScene("PlayScene");
     }
