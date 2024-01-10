@@ -15,6 +15,7 @@ public class ArenaBuilder : MonoBehaviour
 
     public GameObject m_BombPrefab;
     public GameObject m_ExplosionPrefab;
+    public GameObject m_FloatingCystalPrefab;
 
     private char[,] m_Arena;
 
@@ -48,11 +49,14 @@ public class ArenaBuilder : MonoBehaviour
     private Transform m_TileChildTransform;
     private Transform m_BombChildTransform;
     private Transform m_ExplosionChildTransform;
+    private Transform m_CrystalChildTransform;
+
     void Start()
     {
         m_TileChildTransform = gameObject.transform.GetChild(0).transform;
         m_BombChildTransform = gameObject.transform.GetChild(1).transform;
         m_ExplosionChildTransform = gameObject.transform.GetChild(2).transform;
+        m_CrystalChildTransform = gameObject.transform.GetChild(3).transform;
 
         foreach (var kv in m_KeyValueList)
         {
@@ -151,6 +155,27 @@ public class ArenaBuilder : MonoBehaviour
                 }
             }
         }
+
+        float arenaHeight = m_Arena.GetLength(0);
+        float arenaWidth = m_Arena.GetLength(1);
+        int verticalCrystals = (int)(arenaHeight / 5.0f);
+        int horizontalCrystals = (int)(arenaWidth / 5.0f);
+
+        for(int i = 0; i < verticalCrystals; i++)
+        {
+            float z = arenaHeight / verticalCrystals * (i + 0.5f);
+            GameObject a = Instantiate(m_FloatingCystalPrefab, new Vector3(-3.5f, 1.0f, z), Quaternion.identity, m_CrystalChildTransform);
+            GameObject b = Instantiate(m_FloatingCystalPrefab, new Vector3(arenaWidth + 2.5f, 1.0f, z), Quaternion.identity, m_CrystalChildTransform);
+        }
+
+        for (int i = 0; i < horizontalCrystals; i++)
+        {
+            float x = arenaWidth / horizontalCrystals * (i + 0.5f);
+            GameObject a = Instantiate(m_FloatingCystalPrefab, new Vector3(x, 1.0f, arenaHeight + 2.5f), Quaternion.identity, m_CrystalChildTransform);
+        }
+
+
+        Debug.Log(arenaWidth);
     }
 
     // Update is called once per frame

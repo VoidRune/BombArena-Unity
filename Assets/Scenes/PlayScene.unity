@@ -222,6 +222,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_BombPrefab: {fileID: 1641390036979839522, guid: e53515c917b3d3a43bea18b5c01dba44, type: 3}
   m_ExplosionPrefab: {fileID: 4999660808299099897, guid: da7f6ae18ffd22847956212eab284137, type: 3}
+  m_FloatingCystalPrefab: {fileID: 3483179645465967802, guid: b4dfcff7ff83e36429d08950fdea1d8f, type: 3}
   m_KeyValueList:
   - Key: 35
     Value:
@@ -251,6 +252,7 @@ Transform:
   - {fileID: 366336309}
   - {fileID: 2016028736}
   - {fileID: 2039500676}
+  - {fileID: 2051354157}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &346832065
@@ -1953,6 +1955,37 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2039500675}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 316067001}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2051354156
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2051354157}
+  m_Layer: 0
+  m_Name: Crystals
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2051354157
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2051354156}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}

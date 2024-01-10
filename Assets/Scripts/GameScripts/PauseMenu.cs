@@ -13,6 +13,7 @@ public class PauseMenu : MonoBehaviour
     private bool m_IsPause = false;
     void Start()
     {
+        Cursor.visible = false;
         ContinueGame();
         m_BackgroundMusic.Play();
         m_BackgroundMusic.loop = true;
@@ -23,12 +24,14 @@ public class PauseMenu : MonoBehaviour
         {
             if(!m_IsPause)
             {
+                Cursor.visible = true;
                 m_BackgroundMusic.Pause();
                 m_PauseSound.Play();
                 PauseGame();
             }
             else
             {
+                Cursor.visible = false;
                 m_ResumeSound.Play();
                 ContinueGame();
                 m_BackgroundMusic.Play();
