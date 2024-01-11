@@ -27,6 +27,13 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadScene("PlayScene");
     }
 
+    public void StartMapEditor()
+    {
+        GlobalVariables.ArenaMapIndex = 4;
+        Debug.Log("Starting map editor!");
+        SceneManager.LoadScene("Editor");
+    }
+
     public void QuitGame()
     {
         Debug.Log("Quit");

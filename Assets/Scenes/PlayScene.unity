@@ -225,17 +225,11 @@ MonoBehaviour:
   m_FloatingCystalPrefab: {fileID: 3483179645465967802, guid: b4dfcff7ff83e36429d08950fdea1d8f, type: 3}
   m_KeyValueList:
   - Key: 35
-    Value:
-      Mesh: {fileID: -2432090755550338912, guid: a2fb017f446aae04f9905467b4e7041d, type: 3}
-      Material: {fileID: 2100000, guid: 35f897ddd4320b8459303786ca922823, type: 2}
+    Value: {fileID: 8854765273060065964, guid: 89034aff835faee4690d34bbd3d4b348, type: 3}
   - Key: 32
-    Value:
-      Mesh: {fileID: -2432090755550338912, guid: ddf171ec0742d1940b8f2e3f7d14d682, type: 3}
-      Material: {fileID: 2100000, guid: 4f487f8edcdadfe4698392403ac634c1, type: 2}
+    Value: {fileID: 2185819859500960860, guid: 821d86a9e1ee1f14cacff1b31170ecaf, type: 3}
   - Key: 88
-    Value:
-      Mesh: {fileID: -2432090755550338912, guid: 4a582c3654b1998438018d2eaed89066, type: 3}
-      Material: {fileID: 2100000, guid: 923544ec9ab10024a83b07d88c382ed9, type: 2}
+    Value: {fileID: 7560702442203742732, guid: f2ac58bd22a2a994da879b33e3c5e226, type: 3}
 --- !u!4 &316067001
 Transform:
   m_ObjectHideFlags: 0

@@ -4,14 +4,7 @@ using UnityEngine;
 
 public class ArenaBuilder : MonoBehaviour
 {
-    [System.Serializable]
-    public class ArenaTile
-    {
-        public Mesh Mesh;
-        public Material Material;
-    }
-
-    public static Dictionary<char, ArenaTile> m_Tiles = new Dictionary<char, ArenaTile>();
+    public static Dictionary<char, GameObject> m_Tiles = new Dictionary<char, GameObject>();
 
     public GameObject m_BombPrefab;
     public GameObject m_ExplosionPrefab;
@@ -26,7 +19,7 @@ public class ArenaBuilder : MonoBehaviour
     public class KeyValue
     {
         public char Key;
-        public ArenaTile Value;
+        public GameObject Value;
     }
 
     public KeyValue[] m_KeyValueList;
@@ -65,6 +58,10 @@ public class ArenaBuilder : MonoBehaviour
 
         switch (GlobalVariables.ArenaMapIndex)
         {
+            case 4:
+                // Custom arena
+                m_Arena = (char[,])GlobalVariables.CustomEditorArena.Clone();
+                break;
             case 0:
                 m_Arena = new char[,]
                 {
@@ -139,20 +136,7 @@ public class ArenaBuilder : MonoBehaviour
                 if(m_Tiles.ContainsKey(c))
                 {
                     var m = m_Tiles[c];
-
-                    GameObject go = new GameObject();
-                    go.transform.position = new Vector3(x, 0, y);
-                    go.AddComponent<MeshFilter>();
-                    go.AddComponent<MeshRenderer>();
-                    go.GetComponent<MeshFilter>().mesh = m.Mesh;
-                    go.GetComponent<MeshRenderer>().material = m.Material;
-                    if (c != ' ')
-                        go.AddComponent<BoxCollider>();
-
-                    go.transform.parent = m_TileChildTransform;
-                    go.name = c.ToString();
-
-                    m_DestructibleTiles[new Vector2Int(x, y)] = go;
+                    m_DestructibleTiles[new Vector2Int(x, y)] = Instantiate(m, new Vector3(x, 0, y), Quaternion.identity, m_TileChildTransform);
                 }
             }
         }
@@ -259,16 +243,7 @@ public class ArenaBuilder : MonoBehaviour
                     Destroy(m_DestructibleTiles[pos]);
                     m_Arena[pos.y, pos.x] = ' ';
 
-                    GameObject go = new GameObject();
-                    go.transform.position = new Vector3(pos.x, 0, pos.y);
-                    go.AddComponent<MeshFilter>();
-                    go.AddComponent<MeshRenderer>();
-                    go.GetComponent<MeshFilter>().mesh = m_Tiles[' '].Mesh;
-                    go.GetComponent<MeshRenderer>().material = m_Tiles[' '].Material;
-                    go.transform.parent = m_TileChildTransform;
-                    go.name = " ";
-
-                    m_DestructibleTiles[pos] = go;
+                    m_DestructibleTiles[pos] = Instantiate(m_Tiles[' '], new Vector3(pos.x, 0, pos.y), Quaternion.identity, m_TileChildTransform);
 
                     continue;
                 }
