@@ -14,6 +14,23 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         m_RigidBody = GetComponent<Rigidbody>();
+
+        switch (GlobalVariables.ArenaMapIndex)
+        {
+            case 4:
+                gameObject.transform.position = new Vector3(GlobalVariables.CustomArenaRespawnPositions[0].x, 1, GlobalVariables.CustomArenaRespawnPositions[0].y);
+                break;
+            case 0:
+                gameObject.transform.position = new Vector3(1, 1, 1);
+                break;
+            case 1:
+                gameObject.transform.position = new Vector3(4, 1, 1);
+                break;
+            case 2:
+            default:
+                gameObject.transform.position = new Vector3(2, 1, 2);
+                break;
+        }
     }
 
     void Update()

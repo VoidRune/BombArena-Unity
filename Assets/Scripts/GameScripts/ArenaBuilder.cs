@@ -61,6 +61,20 @@ public class ArenaBuilder : MonoBehaviour
             case 4:
                 // Custom arena
                 m_Arena = (char[,])GlobalVariables.CustomEditorArena.Clone();
+
+                for (int y = 0; y < m_Arena.GetLength(0); y++)
+                {
+                    for (int x = 0; x < m_Arena.GetLength(1); x++)
+                    {
+                        char c = m_Arena[y, x];
+
+                        if (c == 'S')
+                        {
+                            m_Arena[y, x] = ' ';
+                        } 
+                    }
+                }
+
                 break;
             case 0:
                 m_Arena = new char[,]

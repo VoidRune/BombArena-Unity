@@ -26,11 +26,13 @@ public class EditorArenaBuilder : MonoBehaviour
     }
 
     public KeyValue[] m_KeyValueList;
+    public GameObject m_Respawn;
 
     private Transform m_TileChildTransform;
 
     public Button m_PlayButton;
     public TMPro.TextMeshProUGUI m_PlayText;
+    public GameObject m_ConditionsText;
 
     void Start()
     {
@@ -40,6 +42,7 @@ public class EditorArenaBuilder : MonoBehaviour
 
             m_PossibleTiles.Add(kv.Key);
         }
+        m_Tiles['S'] = m_Respawn;
 
         m_Plane = new Plane(Vector3.up, Vector3.zero);
         m_TileChildTransform = gameObject.transform.GetChild(0).transform;
@@ -56,7 +59,7 @@ public class EditorArenaBuilder : MonoBehaviour
             {
                 { 'V','V','V','#','#','#','#','#','#','#','#','#','#','#','V','V','V' },
                 { 'V','V','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','V','V' },
-                { 'V','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','V' },
+                { 'V','#','S',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','S','#','V' },
                 { '#',' ',' ',' ','#',' ',' ','#',' ','#',' ',' ','#',' ',' ',' ','#' },
                 { '#',' ',' ','#','#',' ',' ',' ',' ',' ',' ',' ','#','#',' ',' ','#' },
                 { '#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#' },
@@ -68,7 +71,7 @@ public class EditorArenaBuilder : MonoBehaviour
                 { '#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#' },
                 { '#',' ',' ','#','#',' ',' ',' ',' ',' ',' ',' ','#','#',' ',' ','#' },
                 { '#',' ',' ',' ','#',' ',' ','#',' ','#',' ',' ','#',' ',' ',' ','#' },
-                { 'V','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','V' },
+                { 'V','#','S',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','S','#','V' },
                 { 'V','V','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','V','V' },
                 { 'V','V','V','#','#','#','#','#','#','#','#','#','#','#','V','V','V' }
             };
@@ -98,6 +101,20 @@ public class EditorArenaBuilder : MonoBehaviour
     {
         if(ValidateArena())
         {
+            GlobalVariables.CustomArenaRespawnPositions = new List<Vector2Int>();
+            for (int y = 0; y < m_Arena.GetLength(0); y++)
+            {
+                for (int x = 0; x < m_Arena.GetLength(1); x++)
+                {
+                    char c = m_Arena[y, x];
+
+                    if (c == 'S')
+                    {
+                        GlobalVariables.CustomArenaRespawnPositions.Add(new Vector2Int(x, y));
+                    }
+                }
+            }
+
             GlobalVariables.ArenaMapIndex = 4;
             GlobalVariables.CustomEditorArena = m_Arena;
             Debug.Log("Starting custom map!");
@@ -116,13 +133,16 @@ public class EditorArenaBuilder : MonoBehaviour
 
     public bool ValidateArena()
     {
+        int respawnNumber = 0;
         for (int y = 0; y < m_Arena.GetLength(0); y++)
         {
             for (int x = 0; x < m_Arena.GetLength(1); x++)
             {
                 char c = m_Arena[y, x];
 
-                if (c == ' ' || c == 'X')
+                if (c == 'S')
+                    respawnNumber++;
+                if (c == ' ' || c == 'X' || c == 'S')
                 {
                     if(x == 0 || x == m_Arena.GetLength(1) - 1 || y == 0 || y == m_Arena.GetLength(0))
                         return false;
@@ -136,6 +156,8 @@ public class EditorArenaBuilder : MonoBehaviour
                 }
             }
         }
+        if (respawnNumber < 2)
+            return false;
 
         return true;
     }
@@ -200,6 +222,15 @@ public class EditorArenaBuilder : MonoBehaviour
                 TryPlaceTile(pos, 'V');
                 changed = true;
             }
+            else if(Input.GetKey(KeyCode.E))
+            {
+                if (m_Selected != null)
+                    m_Selected.transform.position = new Vector3(-1000, 0, -1000);
+
+                //Respawn
+                TryPlaceTile(pos, 'S');
+                changed = true;
+            }
 
             if (m_LastSelectedPos != pos)
             {
@@ -218,16 +249,20 @@ public class EditorArenaBuilder : MonoBehaviour
             if(ValidateArena())
             {
                 m_PlayButton.interactable = true;
-                Color col = m_PlayText.color;
-                col.a = 1.0f;
-                m_PlayText.color = col;
+                Color col1 = m_PlayText.color;
+                col1.a = 1.0f;
+                m_PlayText.color = col1;
+
+                m_ConditionsText.SetActive(false);
             }
             else
             {
                 m_PlayButton.interactable = false;
-                Color col = m_PlayText.color;
-                col.a = 0.2f;
-                m_PlayText.color = col;
+                Color col1 = m_PlayText.color;
+                col1.a = 0.2f;
+                m_PlayText.color = col1;
+
+                m_ConditionsText.SetActive(true);
             }
         }
     }
