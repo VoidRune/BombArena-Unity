@@ -1494,7 +1494,7 @@ Camera:
   m_GameObject: {fileID: 963194225}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
+  m_ClearFlags: 2
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
@@ -2290,6 +2290,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Explosion
       objectReference: {fileID: 0}
+    - target: {fileID: 4999660808299099897, guid: da7f6ae18ffd22847956212eab284137, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7889051067148779312, guid: da7f6ae18ffd22847956212eab284137, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2346,6 +2350,10 @@ PrefabInstance:
     - target: {fileID: 1641390036979839522, guid: e53515c917b3d3a43bea18b5c01dba44, type: 3}
       propertyPath: m_Name
       value: Bomb
+      objectReference: {fileID: 0}
+    - target: {fileID: 1641390036979839522, guid: e53515c917b3d3a43bea18b5c01dba44, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3938469502523133637, guid: e53515c917b3d3a43bea18b5c01dba44, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2443,6 +2451,10 @@ PrefabInstance:
     - target: {fileID: 3139259801785876888, guid: ba23f6d8c4eed2446aa4bc9f2755afbe, type: 3}
       propertyPath: m_Name
       value: PowerUp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3139259801785876888, guid: ba23f6d8c4eed2446aa4bc9f2755afbe, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
