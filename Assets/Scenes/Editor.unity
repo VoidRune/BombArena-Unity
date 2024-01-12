@@ -1863,7 +1863,7 @@ MonoBehaviour:
     Value: {fileID: 2185819859500960860, guid: 821d86a9e1ee1f14cacff1b31170ecaf, type: 3}
   - Key: 88
     Value: {fileID: 7560702442203742732, guid: f2ac58bd22a2a994da879b33e3c5e226, type: 3}
-  m_Respawn: {fileID: 3139259801785876888, guid: ba23f6d8c4eed2446aa4bc9f2755afbe, type: 3}
+  m_Respawn: {fileID: 8894807554740765919, guid: b3b91218b262a614fb314b514dae4771, type: 3}
   m_PlayButton: {fileID: 1865327829}
   m_PlayText: {fileID: 1653662027}
   m_ConditionsText: {fileID: 1490607060}
