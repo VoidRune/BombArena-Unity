@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EditorMovement : MonoBehaviour
 {
-    public float m_MovementSpeed = 5.0f;
+    public float m_MovementSpeed = 10.0f;
 
     void Start()
     {

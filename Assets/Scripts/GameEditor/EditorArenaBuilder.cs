@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -34,6 +35,10 @@ public class EditorArenaBuilder : MonoBehaviour
     public TMPro.TextMeshProUGUI m_PlayText;
     public GameObject m_ConditionsText;
 
+    public Slider m_WidthSlider;
+    public Slider m_HeightSlider;
+    private bool m_Resized = false;
+
     void Start()
     {
         foreach (var kv in m_KeyValueList)
@@ -60,17 +65,17 @@ public class EditorArenaBuilder : MonoBehaviour
                 { 'V','V','V','#','#','#','#','#','#','#','#','#','#','#','V','V','V' },
                 { 'V','V','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','V','V' },
                 { 'V','#','S',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','S','#','V' },
-                { '#',' ',' ',' ','#',' ',' ','#',' ','#',' ',' ','#',' ',' ',' ','#' },
+                { '#',' ',' ','X','#',' ',' ','#','X','#',' ',' ','#','X',' ',' ','#' },
                 { '#',' ',' ','#','#',' ',' ',' ',' ',' ',' ',' ','#','#',' ',' ','#' },
-                { '#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#' },
+                { '#',' ',' ',' ',' ','X',' ',' ',' ',' ',' ','X',' ',' ',' ',' ','#' },
                 { '#',' ',' ',' ',' ',' ','#','#','#','#','#',' ',' ',' ',' ',' ','#' },
                 { '#',' ',' ','#',' ',' ','#','V','V','V','#',' ',' ','#',' ',' ','#' },
-                { '#',' ',' ',' ',' ',' ','#','V','V','V','#',' ',' ',' ',' ',' ','#' },
+                { '#',' ',' ','X',' ',' ','#','V','V','V','#',' ',' ','X',' ',' ','#' },
                 { '#',' ',' ','#',' ',' ','#','V','V','V','#',' ',' ','#',' ',' ','#' },
                 { '#',' ',' ',' ',' ',' ','#','#','#','#','#',' ',' ',' ',' ',' ','#' },
-                { '#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#' },
+                { '#',' ',' ',' ',' ','X',' ',' ',' ',' ',' ','X',' ',' ',' ',' ','#' },
                 { '#',' ',' ','#','#',' ',' ',' ',' ',' ',' ',' ','#','#',' ',' ','#' },
-                { '#',' ',' ',' ','#',' ',' ','#',' ','#',' ',' ','#',' ',' ',' ','#' },
+                { '#',' ',' ','X','#',' ',' ','#','X','#',' ',' ','#','X',' ',' ','#' },
                 { 'V','#','S',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','S','#','V' },
                 { 'V','V','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','V','V' },
                 { 'V','V','V','#','#','#','#','#','#','#','#','#','#','#','V','V','V' }
@@ -95,6 +100,19 @@ public class EditorArenaBuilder : MonoBehaviour
         m_SelectedCharIndex = 0;
         m_Selected = Instantiate(m_Tiles[m_PossibleTiles[m_SelectedCharIndex]], new Vector3(0, 0, 0), Quaternion.identity, m_TileChildTransform);
         m_LastSelectedPos = new Vector2Int(0, 0);
+
+        m_WidthSlider.value = m_Arena.GetLength(1);
+        m_HeightSlider.value = m_Arena.GetLength(0);
+
+        m_WidthSlider.onValueChanged.AddListener((v) =>
+        {
+            ResizeArena((int)m_HeightSlider.value, (int)m_WidthSlider.value);
+        });
+
+        m_HeightSlider.onValueChanged.AddListener((v) =>
+        {
+            ResizeArena((int)m_HeightSlider.value, (int)m_WidthSlider.value);
+        });
     }
 
     public void PlayCustomArena()
@@ -144,7 +162,7 @@ public class EditorArenaBuilder : MonoBehaviour
                     respawnNumber++;
                 if (c == ' ' || c == 'X' || c == 'S')
                 {
-                    if(x == 0 || x == m_Arena.GetLength(1) - 1 || y == 0 || y == m_Arena.GetLength(0))
+                    if(x == 0 || x == m_Arena.GetLength(1) - 1 || y == 0 || y == m_Arena.GetLength(0) - 1)
                         return false;
                     else
                     {
@@ -167,6 +185,7 @@ public class EditorArenaBuilder : MonoBehaviour
         char c = m_Arena[pos.y, pos.x];
         if (c != tile)
         {
+            //Debug.Log(c + "  " + tile);
             if (m_DestructibleTiles.ContainsKey(pos))
                 Destroy(m_DestructibleTiles[pos]);
             if (m_Tiles.ContainsKey(tile) && m_Tiles[tile] != null)
@@ -175,14 +194,57 @@ public class EditorArenaBuilder : MonoBehaviour
         }
 
     }
-    void Update()
+
+    void ResizeArena(int x, int y)
     {
-        if (Input.mousePosition.y < 85)
+        char[,] newArray = new char[x, y];
+
+        for (int i = 0; i < newArray.GetLength(0); i++)
         {
-            return;
+            for (int j = 0; j < newArray.GetLength(1); j++)
+            {
+                newArray[i, j] = 'V';
+            }
         }
 
-        bool changed = false;
+        int minRows = Math.Min(x, m_Arena.GetLength(0));
+        int minCols = Math.Min(y, m_Arena.GetLength(1));
+        for (int i = 0; i < minRows; i++)
+            for (int j = 0; j < minCols; j++)
+                newArray[i, j] = m_Arena[i, j];
+        
+        int lastWidth = m_Arena.GetLength(0);
+        int lastHeight = m_Arena.GetLength(1);
+        
+        Vector2Int pos = new Vector2Int(0, 0);
+        for (int i = x; i < lastWidth; i++)
+        {
+            for (int j = 0; j < lastHeight; j++)
+            {
+                pos.x = j;
+                pos.y = i;
+                if (m_DestructibleTiles.ContainsKey(pos))
+                    Destroy(m_DestructibleTiles[pos]);
+            }
+        }
+
+        for (int j = y; j < lastHeight; j++)
+        {
+            for (int i = 0; i < x; i++)
+            {
+                pos.x = j;
+                pos.y = i;
+                if (m_DestructibleTiles.ContainsKey(pos))
+                    Destroy(m_DestructibleTiles[pos]);
+            }
+        }
+        
+        m_Arena = newArray;
+        m_Resized = true;
+    }
+    void Update()
+    {
+        bool changed = m_Resized;
 
         if (Input.mouseScrollDelta.y > 0)
         {
@@ -209,29 +271,32 @@ public class EditorArenaBuilder : MonoBehaviour
 
             Vector2Int pos = new Vector2Int((int)p.x, (int)p.z);
 
-            if (Input.GetMouseButton(0))
+            if (Input.mousePosition.y >= 85 && Input.mousePosition.x >= 330)
             {
-                TryPlaceTile(pos, selectedChar);
-                changed = true;
-            }
-            else if(Input.GetMouseButton(1))
-            {
-                if (m_Selected != null)
-                    m_Selected.transform.position = new Vector3(-1000, 0, -1000);
 
-                TryPlaceTile(pos, 'V');
-                changed = true;
-            }
-            else if(Input.GetKey(KeyCode.E))
-            {
-                if (m_Selected != null)
-                    m_Selected.transform.position = new Vector3(-1000, 0, -1000);
+                if (Input.GetMouseButton(0))
+                {
+                    TryPlaceTile(pos, selectedChar);
+                    changed = true;
+                }
+                else if (Input.GetMouseButton(1))
+                {
+                    if (m_Selected != null)
+                        m_Selected.transform.position = new Vector3(-1000, 0, -1000);
 
-                //Respawn
-                TryPlaceTile(pos, 'S');
-                changed = true;
-            }
+                    TryPlaceTile(pos, 'V');
+                    changed = true;
+                }
+                else if (Input.GetKey(KeyCode.E))
+                {
+                    if (m_Selected != null)
+                        m_Selected.transform.position = new Vector3(-1000, 0, -1000);
 
+                    //Respawn
+                    TryPlaceTile(pos, 'S');
+                    changed = true;
+                }
+            }
             if (m_LastSelectedPos != pos)
             {
                 if (m_DestructibleTiles.ContainsKey(m_LastSelectedPos) && m_DestructibleTiles[m_LastSelectedPos] != null)
@@ -264,6 +329,8 @@ public class EditorArenaBuilder : MonoBehaviour
 
                 m_ConditionsText.SetActive(true);
             }
+
+            m_Resized = false;
         }
     }
 }

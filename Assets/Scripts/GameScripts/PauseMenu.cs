@@ -53,6 +53,11 @@ public class PauseMenu : MonoBehaviour
         m_IsPause = false;
     }
 
+    public void RestartGame()
+    {
+        SceneManager.LoadScene("PlayScene");
+    }
+
     public void ToMainMenu()
     {
         ContinueGame();
