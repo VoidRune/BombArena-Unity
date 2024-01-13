@@ -70,6 +70,7 @@ public class PauseMenu : MonoBehaviour
     public void disable()
     {
         gameObject.transform.GetChild(0).gameObject.SetActive(false);
+        Cursor.visible = true;
         m_isDisabled = true;
     }
 }

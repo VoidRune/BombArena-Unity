@@ -78,6 +78,9 @@ public class ArenaBuilder : MonoBehaviour
         m_BombChildTransform = gameObject.transform.GetChild(1).transform;
         m_ExplosionChildTransform = gameObject.transform.GetChild(2).transform;
         m_CrystalChildTransform = gameObject.transform.GetChild(3).transform;
+        m_SpeedPowerUpTransform = gameObject.transform.GetChild(4).transform;
+        m_RangePowerUpTransform = gameObject.transform.GetChild(5).transform;
+        m_BombPowerUpTransform = gameObject.transform.GetChild(6).transform;
 
         foreach (var kv in m_KeyValueList)
         {
@@ -327,6 +330,7 @@ public class ArenaBuilder : MonoBehaviour
                     ex0.position = pos + ex.direction;
                     ex0.direction = ex.direction;
                     ex0.popagation = ex.popagation - 1;
+                    ex0.color = ex.color;
 
                     newExplosionQueue.Add(ex0);
                 }
@@ -392,7 +396,8 @@ public class ArenaBuilder : MonoBehaviour
             Index randomElement = emptyTiles[Random.Range(0, emptyTiles.Count - 1)];
             int randomPowerUp = Random.Range(0, 3);
             GameObject[] powerUps = new GameObject[] { m_SpeedPowerUpPrefab, m_RadiusPowerUpPrefab, m_BombPowerUpPrefab };
-            GameObject powerUpObj = Instantiate(powerUps[randomPowerUp], new Vector3(randomElement.Column, 1.0f, randomElement.Row), Quaternion.identity);
+            Transform[] powerUpTransforms = new Transform[] { m_SpeedPowerUpTransform, m_RangePowerUpTransform, m_BombPowerUpTransform };
+            GameObject powerUpObj = Instantiate(powerUps[randomPowerUp], new Vector3(randomElement.Column, 1.0f, randomElement.Row), Quaternion.identity, powerUpTransforms[randomPowerUp]);
             PowerUp powerUp = new PowerUp();
             powerUp.obj = powerUpObj;
             powerUp.position = new Vector2Int(randomElement.Column, randomElement.Row);

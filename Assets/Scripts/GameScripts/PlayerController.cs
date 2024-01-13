@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     public AudioSource m_PowerUpSound;
     public TextMeshProUGUI m_HUD;
 
-
+    private GameObject m_ForceField;
     private GameObject m_LastBombPlaced;
     private float rotationSpeed;
     private PlayerInventory inventory;
@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         m_RigidBody = GetComponent<Rigidbody>();
+        m_ForceField = gameObject.transform.GetChild(0).gameObject;
         rotationSpeed = 10f;
         dead = false;
         deadTime = 0f;
@@ -86,6 +87,9 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+
+        m_ForceField.SetActive(Time.time <= invincibleTime);
+
         m_HUD.text = "Lives: " + lives + ", Bombs: " + inventory.Bombs;
         if(dead && Time.time < deadTime)
         {
