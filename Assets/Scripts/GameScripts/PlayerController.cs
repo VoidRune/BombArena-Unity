@@ -153,8 +153,8 @@ public class PlayerController : MonoBehaviour
 
             Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
 
-            m_RigidBody.rotation = Quaternion.Slerp(m_RigidBody.rotation, targetRotation, Time.deltaTime * rotationSpeed);
-            lastRotation = m_RigidBody.rotation;
+            lastRotation = Quaternion.Slerp(lastRotation, targetRotation, Time.deltaTime * rotationSpeed);
+            m_RigidBody.rotation = lastRotation;
 
         } else
         {

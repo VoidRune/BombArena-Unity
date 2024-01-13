@@ -10,5 +10,6 @@ public class GlobalVariables : MonoBehaviour
     public static char[,] CustomEditorArena = null;
     public static List<Vector2Int> CustomArenaRespawnPositions = null;
     public static float powerupInterval = 5.0f;
+    public static int maximumPowerups = 5;
 
 }
