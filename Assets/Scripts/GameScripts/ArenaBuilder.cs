@@ -358,7 +358,7 @@ public class ArenaBuilder : MonoBehaviour
             }
         }
 
-        if(m_PowerUpList.Count > 4)
+        if(m_PowerUpList.Count >= GlobalVariables.maximumPowerups)
         {
             return;
         }
@@ -370,9 +370,10 @@ public class ArenaBuilder : MonoBehaviour
             Index randomElement = emptyTiles[Random.Range(0, emptyTiles.Count - 1)];
             int randomPowerUp = Random.Range(0, 2);
             GameObject[] powerUps = new GameObject[] { m_SpeedPowerUpPrefab, m_RadiusPowerUpPrefab, m_BombPowerUpPrefab };
-            GameObject powerUpObj = Instantiate(powerUps[randomPowerUp], new Vector3(randomElement.Row, 1.0f, randomElement.Column), Quaternion.identity);
+            GameObject powerUpObj = Instantiate(powerUps[randomPowerUp], new Vector3(randomElement.Column, 1.0f, randomElement.Row), Quaternion.identity);
             PowerUp powerUp = new PowerUp();
             powerUp.obj = powerUpObj;
+            powerUp.position = new Vector2Int(randomElement.Column, randomElement.Row);
             m_PowerUpList.Add(powerUp);
         }
     }
@@ -398,7 +399,7 @@ public class ArenaBuilder : MonoBehaviour
     }
     private bool powerUpPresent(int row, int col)
     {
-        Vector2Int position = new Vector2Int(row, col);
+        Vector2Int position = new Vector2Int(col, row);
         foreach(PowerUp powerUp in m_PowerUpList)
         {
             if(powerUp.position == position)
