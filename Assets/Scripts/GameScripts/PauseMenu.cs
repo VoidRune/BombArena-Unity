@@ -11,6 +11,8 @@ public class PauseMenu : MonoBehaviour
     public AudioSource m_BackgroundMusic;
 
     private bool m_IsPause = false;
+    private bool m_isDisabled = false;
+
     void Start()
     {
         Cursor.visible = false;
@@ -20,7 +22,7 @@ public class PauseMenu : MonoBehaviour
     }
     void Update()
     {
-        if(Input.GetKeyUp(KeyCode.Escape))
+        if(Input.GetKeyUp(KeyCode.Escape) && !m_isDisabled)
         {
             if(!m_IsPause)
             {
@@ -63,5 +65,11 @@ public class PauseMenu : MonoBehaviour
         ContinueGame();
         Debug.Log("Back to main menu");
         SceneManager.LoadScene("MainMenu");
+    }
+
+    public void disable()
+    {
+        gameObject.transform.GetChild(0).gameObject.SetActive(false);
+        m_isDisabled = true;
     }
 }

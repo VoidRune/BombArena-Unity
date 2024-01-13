@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+
 
 public class ArenaBuilder : MonoBehaviour
 {
@@ -9,6 +11,14 @@ public class ArenaBuilder : MonoBehaviour
     public GameObject m_BombPrefab;
     public GameObject m_ExplosionPrefab;
     public GameObject m_FloatingCystalPrefab;
+    public GameObject m_SpeedPowerUpPrefab;
+    public GameObject m_RadiusPowerUpPrefab;
+    public GameObject m_BombPowerUpPrefab;
+    public GameObject m_gameOverScreen;
+    public PauseMenu m_pauseScript;
+
+
+    public AudioSource m_explosionSound;
 
     private char[,] m_Arena;
 
@@ -27,9 +37,19 @@ public class ArenaBuilder : MonoBehaviour
     public class Bomb
     {
         public float timeOfExplosion;
+        public int explosionRadius;
+        public PlayerInventory playerInventory;
         public GameObject obj;
     }
+
+    public class PowerUp
+    {
+        public GameObject obj;
+        public Vector2Int position;
+    }
+
     private Dictionary<Vector2Int, Bomb> m_BombQueue = new Dictionary<Vector2Int, Bomb>();
+    private List<PowerUp> m_PowerUpList = new List<PowerUp>();
     public class Explosion
     {
         public float timeOfExplosion;
@@ -43,9 +63,16 @@ public class ArenaBuilder : MonoBehaviour
     private Transform m_BombChildTransform;
     private Transform m_ExplosionChildTransform;
     private Transform m_CrystalChildTransform;
+    private Transform m_SpeedPowerUpTransform;
+    private Transform m_RangePowerUpTransform;
+    private Transform m_BombPowerUpTransform;
+
+    private float nextPowerupSpawnTime;
 
     void Start()
     {
+        m_gameOverScreen.SetActive(false);
+        nextPowerupSpawnTime = 0f;
         m_TileChildTransform = gameObject.transform.GetChild(0).transform;
         m_BombChildTransform = gameObject.transform.GetChild(1).transform;
         m_ExplosionChildTransform = gameObject.transform.GetChild(2).transform;
@@ -181,6 +208,12 @@ public class ArenaBuilder : MonoBehaviour
     void Update()
     {
 
+        if(nextPowerupSpawnTime < Time.time)
+        {
+            spawnPowerup();
+            nextPowerupSpawnTime = Time.time + GlobalVariables.powerupInterval;
+        }
+
         List<Vector2Int> valuesToDelete = new List<Vector2Int>();
 
         foreach (KeyValuePair<Vector2Int, Bomb> entry in m_BombQueue)
@@ -201,31 +234,34 @@ public class ArenaBuilder : MonoBehaviour
                 ex1.timeOfExplosion = Time.time;
                 ex1.position = new Vector2Int(pos.x-1, pos.y);
                 ex1.direction = new Vector2Int(-1, 0);
-                ex1.popagation = 4;
+                ex1.popagation = entry.Value.explosionRadius;
 
                 Explosion ex2 = new Explosion();
                 ex2.timeOfExplosion = Time.time;
                 ex2.position = new Vector2Int(pos.x+1, pos.y);
                 ex2.direction = new Vector2Int(1, 0);
-                ex2.popagation = 4;
+                ex2.popagation = entry.Value.explosionRadius;
 
                 Explosion ex3 = new Explosion();
                 ex3.timeOfExplosion = Time.time;
                 ex3.position = new Vector2Int(pos.x, pos.y-1);
                 ex3.direction = new Vector2Int(0,-1);
-                ex3.popagation = 4;
+                ex3.popagation = entry.Value.explosionRadius;
 
                 Explosion ex4 = new Explosion();
                 ex4.timeOfExplosion = Time.time;
                 ex4.position = new Vector2Int(pos.x, pos.y+1);
                 ex4.direction = new Vector2Int(0, 1);
-                ex4.popagation = 4;
+                ex4.popagation = entry.Value.explosionRadius;
 
                 m_ExplosionQueue.Add(ex0);
                 m_ExplosionQueue.Add(ex1);
                 m_ExplosionQueue.Add(ex2);
                 m_ExplosionQueue.Add(ex3);
                 m_ExplosionQueue.Add(ex4);
+
+                entry.Value.playerInventory.Bombs++;
+                m_explosionSound.Play();
 
                 //Instantiate(m_ExplosionPrefab, new Vector3(pos.x, 0, pos.y), Quaternion.identity, m_ExplosionChildTransform);
                 //m_BombQueue.Remove(entry.Key);
@@ -282,14 +318,17 @@ public class ArenaBuilder : MonoBehaviour
         m_ExplosionQueue = newExplosionQueue;
     }
 
-    public GameObject TryPlaceBomb(int x, int z)
+    public GameObject TryPlaceBomb(int x, int z, int bombCount, Color bombColor, float detonationTime, int radius, PlayerInventory inventory)
     {
-        if(m_Arena[z, x] == ' ')
+
+        if(m_Arena[z, x] == ' ' && bombCount > 0)
         {
             m_Arena[z, x] = 'B';
             GameObject b = Instantiate(m_BombPrefab, new Vector3(x, 0, z), Quaternion.identity, m_BombChildTransform);
             Bomb bomb = new Bomb();
-            bomb.timeOfExplosion = Time.time + 2.0f;
+            bomb.timeOfExplosion = Time.time + detonationTime;
+            bomb.explosionRadius = radius;
+            bomb.playerInventory = inventory;
             bomb.obj = b;
             Vector2Int pos = new Vector2Int(x, z);
             m_BombQueue.Add(pos, bomb);
@@ -299,4 +338,89 @@ public class ArenaBuilder : MonoBehaviour
 
         return null;
     }
+
+    public void gameOver()
+    {
+        Time.timeScale = 0.0f;
+        m_pauseScript.disable();
+        
+        m_gameOverScreen.SetActive(true);
+    }
+
+    private void spawnPowerup()
+    {
+        
+        for (int i = m_PowerUpList.Count - 1; i >= 0; i--)
+        {
+            if (m_PowerUpList[i].obj == null)
+            {
+                m_PowerUpList.RemoveAt(i);
+            }
+        }
+
+        if(m_PowerUpList.Count > 4)
+        {
+            return;
+        }
+
+        List<Index> emptyTiles = getEmptyTiles();
+
+        if(emptyTiles.Count > 0)
+        {
+            Index randomElement = emptyTiles[Random.Range(0, emptyTiles.Count - 1)];
+            int randomPowerUp = Random.Range(0, 2);
+            GameObject[] powerUps = new GameObject[] { m_SpeedPowerUpPrefab, m_RadiusPowerUpPrefab, m_BombPowerUpPrefab };
+            GameObject powerUpObj = Instantiate(powerUps[randomPowerUp], new Vector3(randomElement.Row, 1.0f, randomElement.Column), Quaternion.identity);
+            PowerUp powerUp = new PowerUp();
+            powerUp.obj = powerUpObj;
+            m_PowerUpList.Add(powerUp);
+        }
+    }
+
+    private List<Index> getEmptyTiles()
+    {
+        var emptyTiles = new List<Index>();
+
+        Debug.Log(m_Arena);
+
+        for (int i = 0; i < m_Arena.GetLength(0); i++)
+        {
+            for (int j = 0; j < m_Arena.GetLength(1); j++)
+            {
+                if (m_Arena[i, j] == ' ' && !powerUpPresent(i, j))
+                {
+                    emptyTiles.Add(new Index(i, j));
+                }
+            }
+        }
+
+        return emptyTiles;
+    }
+    private bool powerUpPresent(int row, int col)
+    {
+        Vector2Int position = new Vector2Int(row, col);
+        foreach(PowerUp powerUp in m_PowerUpList)
+        {
+            if(powerUp.position == position)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }
+
+public struct Index
+{
+    public int Row;
+    public int Column;
+
+    public Index(int row, int column)
+    {
+        Row = row;
+        Column = column;
+    }
+}
+

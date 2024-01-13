@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PowerUp : MonoBehaviour
 {
+
     void Update()
     {
         float x = gameObject.transform.position.x;

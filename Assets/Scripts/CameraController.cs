@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    public Transform m_Transform;
+    public Transform m_Transform1;
+    public Transform m_Transform2;
     public Material m_PostProcessing;
 
     public float m_BackgroundScale = 1.0f;
@@ -24,11 +25,18 @@ public class CameraController : MonoBehaviour
         //m_PostProcessing.SetFloat("_BackgroundScale", m_BackgroundScale);
         //m_PostProcessing.SetFloat("_TimeScale", m_Time);
 
-        Vector3 offset = new Vector3(0, 6, -3.5f);
-        transform.position = m_Transform.position + offset;
+        Vector3 midpoint = (m_Transform1.position + m_Transform2.position) / 2;
 
+        float distance = (Vector3.Distance(m_Transform1.position, m_Transform2.position) / 10) + 5;
+        Vector3 offset = new Vector3(
+            0,
+            Mathf.Tan(Mathf.PI / 3) * distance,
+            -Mathf.Tan(60 * Mathf.Deg2Rad / 2) * distance * 2
+        );
 
-        transform.LookAt(m_Transform.position, Vector3.up);
+        transform.position = midpoint + offset;
+
+        transform.LookAt(midpoint, Vector3.up);
     }
 
     private void OnRenderImage(RenderTexture source, RenderTexture destination)
