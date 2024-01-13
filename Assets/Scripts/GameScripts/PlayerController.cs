@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     public ArenaBuilder m_ArenaBuilderScript;
     public float playerType;
     public AudioSource m_deathSound;
+    public AudioSource m_PowerUpSound;
     public TextMeshProUGUI m_HUD;
 
 
@@ -287,6 +288,8 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
+        m_PowerUpSound.Play();
+
         Debug.Log("PowerUp Hit");
 
     }
