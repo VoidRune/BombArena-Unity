@@ -56,6 +56,7 @@ public class ArenaBuilder : MonoBehaviour
         public Vector2Int position;
         public Vector2Int direction;
         public int popagation;
+        public Color color;
     }
     private List<Explosion> m_ExplosionQueue = new List<Explosion>();
 
@@ -224,35 +225,46 @@ public class ArenaBuilder : MonoBehaviour
                 valuesToDelete.Add(entry.Key);
                 m_Arena[pos.y, pos.x] = ' ';
 
+                Color explosionColor = entry.Value.playerInventory.BombColor;
+
                 Explosion ex0 = new Explosion();
                 ex0.timeOfExplosion = Time.time;
                 ex0.position = pos;
                 ex0.direction = new Vector2Int(0, 0);
                 ex0.popagation = 0;
+                ex0.color = explosionColor;
 
                 Explosion ex1 = new Explosion();
                 ex1.timeOfExplosion = Time.time;
                 ex1.position = new Vector2Int(pos.x-1, pos.y);
                 ex1.direction = new Vector2Int(-1, 0);
                 ex1.popagation = entry.Value.explosionRadius;
+                ex1.color = explosionColor;
+
 
                 Explosion ex2 = new Explosion();
                 ex2.timeOfExplosion = Time.time;
                 ex2.position = new Vector2Int(pos.x+1, pos.y);
                 ex2.direction = new Vector2Int(1, 0);
                 ex2.popagation = entry.Value.explosionRadius;
+                ex2.color = explosionColor;
+
 
                 Explosion ex3 = new Explosion();
                 ex3.timeOfExplosion = Time.time;
                 ex3.position = new Vector2Int(pos.x, pos.y-1);
                 ex3.direction = new Vector2Int(0,-1);
                 ex3.popagation = entry.Value.explosionRadius;
+                ex3.color = explosionColor;
+
 
                 Explosion ex4 = new Explosion();
                 ex4.timeOfExplosion = Time.time;
                 ex4.position = new Vector2Int(pos.x, pos.y+1);
                 ex4.direction = new Vector2Int(0, 1);
                 ex4.popagation = entry.Value.explosionRadius;
+                ex4.color = explosionColor;
+
 
                 m_ExplosionQueue.Add(ex0);
                 m_ExplosionQueue.Add(ex1);
@@ -286,8 +298,18 @@ public class ArenaBuilder : MonoBehaviour
                     continue;
                 }
 
-                Instantiate(m_ExplosionPrefab, new Vector3(ex.position.x, 0, ex.position.y), Quaternion.identity, m_ExplosionChildTransform);
-                
+                GameObject explosionObject = Instantiate(m_ExplosionPrefab, new Vector3(ex.position.x, 0, ex.position.y), Quaternion.identity, m_ExplosionChildTransform);
+                if(explosionObject != null)
+                {
+                    ParticleSystem[] particleSystems = explosionObject.GetComponentsInChildren<ParticleSystem>();
+
+                    foreach (ParticleSystem ps in particleSystems)
+                    {
+                        var mainModule = ps.main;
+                        mainModule.startColor = ex.color;
+                    }
+                }
+
                 if(tile == 'X')
                 {
                     Destroy(m_DestructibleTiles[pos]);

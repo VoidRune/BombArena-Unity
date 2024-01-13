@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour
         deadTime = 0f;
         invincibleTime = 0f;
         inventory = new PlayerInventory();
+
         lastRotation = Quaternion.identity;
 
         lives = 3;
@@ -59,6 +60,8 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            inventory.BombColor = Color.blue;
+
             switch (GlobalVariables.ArenaMapIndex)
             {
                 case 4:
@@ -268,6 +271,10 @@ public class PlayerController : MonoBehaviour
     void reset()
     {
         this.inventory = new PlayerInventory();
+        if(playerType >= 1.0f)
+        {
+            this.inventory.BombColor = Color.blue;
+        }
         this.resetPosition();
         this.lives = 3;
     }
@@ -313,6 +320,6 @@ public class PlayerInventory
         DetonationTime = detonationTime;
 
         LastPlaced = new Vector2Int(-1, -1);
-        BombColor = new Color(1, 1, 1);
+        BombColor = Color.red;
     }
 }
