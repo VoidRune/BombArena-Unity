@@ -162,7 +162,7 @@ public class PlayerController : MonoBehaviour
         }
 
 
-        velocity = velocity.normalized * (m_MovementSpeed + (inventory.SpeedPowerup > 0 ? 2f : 0));
+        velocity = velocity.normalized * Mathf.Min(10.0f, m_MovementSpeed + inventory.SpeedPowerup * 0.2f);
 
         m_RigidBody.velocity = velocity;
 
@@ -177,12 +177,12 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if ((playerType < 1 && Input.GetKeyDown(KeyCode.E)) || (playerType >= 1 && Input.GetKeyDown(KeyCode.Return)))
+        if ((playerType < 1 && Input.GetKey(KeyCode.E)) || (playerType >= 1 && Input.GetKeyDown(KeyCode.Return)))
         {
             int x = (int)(gameObject.transform.position.x + 0.5f);
             int z = (int)(gameObject.transform.position.z + 0.5f);
 
-            GameObject b = m_ArenaBuilderScript.TryPlaceBomb(x, z, inventory.Bombs, inventory.BombColor, inventory.DetonationTime, inventory.RadiusPowerup + 1, inventory);
+            GameObject b = m_ArenaBuilderScript.TryPlaceBomb(x, z, inventory.Bombs, inventory.BombColor, inventory.DetonationTime, inventory.RadiusPowerup, inventory);
             Debug.Log(inventory.Bombs);
 
             if (b != null)

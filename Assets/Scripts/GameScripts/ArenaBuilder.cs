@@ -368,7 +368,7 @@ public class ArenaBuilder : MonoBehaviour
         if(emptyTiles.Count > 0)
         {
             Index randomElement = emptyTiles[Random.Range(0, emptyTiles.Count - 1)];
-            int randomPowerUp = Random.Range(0, 2);
+            int randomPowerUp = Random.Range(0, 3);
             GameObject[] powerUps = new GameObject[] { m_SpeedPowerUpPrefab, m_RadiusPowerUpPrefab, m_BombPowerUpPrefab };
             GameObject powerUpObj = Instantiate(powerUps[randomPowerUp], new Vector3(randomElement.Column, 1.0f, randomElement.Row), Quaternion.identity);
             PowerUp powerUp = new PowerUp();
