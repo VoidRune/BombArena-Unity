@@ -262,7 +262,8 @@ public class PlayerController : MonoBehaviour
         this.lives--;
         if (this.lives < 1)
         {
-            m_ArenaBuilderScript.gameOver();
+            int playerIndexWin = (playerType < 1) ? 2 : 1;
+            m_ArenaBuilderScript.gameOver("GAME OVER PLAYER" + playerIndexWin + " WINS");
         }
         this.dead = true;
         this.deadTime = Time.time + 3f;

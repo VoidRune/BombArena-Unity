@@ -365,12 +365,13 @@ public class ArenaBuilder : MonoBehaviour
         return null;
     }
 
-    public void gameOver()
+    public void gameOver(string gameOverText)
     {
         Time.timeScale = 0.0f;
         m_pauseScript.disable();
         
         m_gameOverScreen.SetActive(true);
+        m_gameOverScreen.transform.GetChild(3).gameObject.GetComponent<TMPro.TextMeshProUGUI>().SetText(gameOverText);
     }
 
     private void spawnPowerup()
