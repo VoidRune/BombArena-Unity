@@ -25,11 +25,15 @@ public class EditorCameraController : MonoBehaviour
         //m_PostProcessing.SetFloat("_TimeScale", m_Time);
 
 
-        Vector3 offset = new Vector3(0, 5, -3);
+        Vector3 offset = new Vector3(0, 7.0f, -3.5f);
 
         transform.position = m_Transform.position + offset;
 
         transform.LookAt(m_Transform.position, Vector3.up);
+    }
+    private void OnRenderImage(RenderTexture source, RenderTexture destination)
+    {
+        Graphics.Blit(source, destination, m_PostProcessing);
     }
 
 }
