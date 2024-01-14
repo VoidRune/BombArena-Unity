@@ -9,7 +9,7 @@ public class GlobalVariables : MonoBehaviour
     // ArenaMapIndex = 4 is custom editor map
     public static char[,] CustomEditorArena = null;
     public static List<Vector2Int> CustomArenaRespawnPositions = null;
-    public static float powerupInterval = 5.0f;
-    public static int maximumPowerups = 5;
+    public static float powerupInterval = 2.0f;
+    public static int maximumPowerups = 8;
 
 }

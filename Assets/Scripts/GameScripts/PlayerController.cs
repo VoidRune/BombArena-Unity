@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody m_RigidBody;
     public float m_MovementSpeed;
 
+    public Animator m_Animator;
     public ArenaBuilder m_ArenaBuilderScript;
     public float playerType;
     public AudioSource m_deathSound;
@@ -66,7 +67,8 @@ public class PlayerController : MonoBehaviour
             switch (GlobalVariables.ArenaMapIndex)
             {
                 case 4:
-                    gameObject.transform.position = new Vector3(GlobalVariables.CustomArenaRespawnPositions[1].x, 1, GlobalVariables.CustomArenaRespawnPositions[1].y);
+                    int last = GlobalVariables.CustomArenaRespawnPositions.Count - 1;
+                    gameObject.transform.position = new Vector3(GlobalVariables.CustomArenaRespawnPositions[last].x, 1, GlobalVariables.CustomArenaRespawnPositions[last].y);
                     break;
                 case 0:
                     gameObject.transform.position = new Vector3(15, 1, 11);
@@ -162,14 +164,16 @@ public class PlayerController : MonoBehaviour
 
             lastRotation = Quaternion.Slerp(lastRotation, targetRotation, Time.deltaTime * rotationSpeed);
             m_RigidBody.rotation = lastRotation;
+            m_Animator.SetBool("IsMoving", true);
 
         } else
         {
             m_RigidBody.rotation = lastRotation;
+            m_Animator.SetBool("IsMoving", false);
         }
 
 
-        velocity = velocity.normalized * Mathf.Min(10.0f, m_MovementSpeed + inventory.SpeedPowerup * 0.2f);
+        velocity = velocity.normalized * Mathf.Min(5.5f, m_MovementSpeed + inventory.SpeedPowerup * 0.15f);
 
         m_RigidBody.velocity = velocity;
 
@@ -256,7 +260,7 @@ public class PlayerController : MonoBehaviour
     {
 
         this.lives--;
-        if(this.lives < 1)
+        if (this.lives < 1)
         {
             m_ArenaBuilderScript.gameOver();
         }
@@ -265,11 +269,62 @@ public class PlayerController : MonoBehaviour
         this.invincibleTime = Time.time + 6f;
         m_deathSound.Play();
         this.resetInventory();
+
+        if (GlobalVariables.ArenaMapIndex == 4)
+        {
+            int randomPos = Random.Range(0, GlobalVariables.CustomArenaRespawnPositions.Count);
+            startPosition = new Vector3(GlobalVariables.CustomArenaRespawnPositions[randomPos].x, 1, GlobalVariables.CustomArenaRespawnPositions[randomPos].y);
+        }
     }
+
     void resetPosition()
     {
         gameObject.transform.position = startPosition;
         gameObject.transform.rotation = Quaternion.identity;
+
+        int randomPos = Random.Range(0, GlobalVariables.CustomArenaRespawnPositions.Count);
+        Debug.Log(randomPos);
+        if (playerType < 1)
+        {
+            switch (GlobalVariables.ArenaMapIndex)
+            {
+                case 4:
+                    gameObject.transform.position = new Vector3(GlobalVariables.CustomArenaRespawnPositions[randomPos].x, 1, GlobalVariables.CustomArenaRespawnPositions[randomPos].y);
+                    break;
+                case 0:
+                    gameObject.transform.position = new Vector3(1, 1, 1);
+                    break;
+                case 1:
+                    gameObject.transform.position = new Vector3(4, 1, 1);
+                    break;
+                case 2:
+                default:
+                    gameObject.transform.position = new Vector3(2, 1, 2);
+                    break;
+            }
+        }
+        else
+        {
+            inventory.BombColor = Color.blue;
+
+            switch (GlobalVariables.ArenaMapIndex)
+            {
+                case 4:
+                    gameObject.transform.position = new Vector3(GlobalVariables.CustomArenaRespawnPositions[randomPos].x, 1, GlobalVariables.CustomArenaRespawnPositions[randomPos].y);
+                    break;
+                case 0:
+                    gameObject.transform.position = new Vector3(15, 1, 11);
+                    break;
+                case 1:
+                    gameObject.transform.position = new Vector3(12, 1, 15);
+                    break;
+                case 2:
+                default:
+                    gameObject.transform.position = new Vector3(14, 1, 14);
+                    break;
+            }
+        }
+
 
     }
     void reset()

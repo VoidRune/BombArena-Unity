@@ -301,7 +301,7 @@ public class ArenaBuilder : MonoBehaviour
                     continue;
                 }
 
-                GameObject explosionObject = Instantiate(m_ExplosionPrefab, new Vector3(ex.position.x, 0, ex.position.y), Quaternion.identity, m_ExplosionChildTransform);
+                GameObject explosionObject = Instantiate(m_ExplosionPrefab, new Vector3(ex.position.x, 0.5f, ex.position.y), Quaternion.identity, m_ExplosionChildTransform);
                 if(explosionObject != null)
                 {
                     ParticleSystem[] particleSystems = explosionObject.GetComponentsInChildren<ParticleSystem>();

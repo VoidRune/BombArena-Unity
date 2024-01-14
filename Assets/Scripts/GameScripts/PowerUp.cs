@@ -9,7 +9,7 @@ public class PowerUp : MonoBehaviour
     {
         float x = gameObject.transform.position.x;
         float z = gameObject.transform.position.z;
-        float y = 0.5f + Mathf.Sin(Time.time) * 0.4f;
+        float y = 0.8f + Mathf.Sin(Time.time) * 0.2f;
         gameObject.transform.position = new Vector3(x, y, z);
     }
 

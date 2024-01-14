@@ -5201,7 +5201,7 @@ MonoBehaviour:
   m_Camera: {fileID: 2033058390}
   m_EpsilonSlider: {fileID: 1811128079}
   m_Power: 8
-  m_Epsilon: 0.0006
+  m_Epsilon: 0.001
   m_ColorA: {r: 0, g: 0, b: 0, a: 0}
   m_ColorB: {r: 1, g: 1, b: 1, a: 0}
   m_MaxDistance: 4
